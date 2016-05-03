@@ -1,4 +1,10 @@
-﻿using System;
+﻿//Marks Analysis Created by: Dylon Lemus
+//May 3, 2016
+/*Description: A program in which you can input grades between 0-100% and it will analyze them allowing you 
+to see the average marks, the maximum and minimum mark, the number of marks in each of the 4 grades and the 
+range of marks. A clear button is also included to remove all the marks from the list and so process can be restarted.
+*/
+using System;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Data;
@@ -16,39 +22,43 @@ namespace Marks_Analysis
         {
             InitializeComponent();
         }
-        bool canClick = false;
+        bool canClick, limit = false;
         int n;
         List<int> grades = new List<int>() { };
         private void addButton_Click(object sender, EventArgs e)
         {
-           
-            try
+            if (limit == false)
             {
-                label1.Text = "";
-                n=(int.Parse(marksBox.Text));//changes text into integer
-                if (n >= 0 && n <=100)//numbers has to be in between 0-100
+                try
                 {
-                    canClick = true;//analyze button can be clicked
-                    grades.Add(n);//adds it to list
-                    label3.Text = "";
-                }
-                else { label3.Text = "Must enter number between 0-100"; }//if number is not in between 0-100
+                    label1.Text = "";
+                    n = (int.Parse(marksBox.Text));//changes text into integer
+                    if (n >= 0 && n <= 100)//numbers has to be in between 0-100
+                    {
+                        canClick = true;//analyze button can be clicked
+                        grades.Add(n);//adds it to list
+                        label3.Text = "";
+                    }
+                    else { label3.Text = "Must enter number between 0-100"; }//if number is not in between 0-100
 
+                }
+                catch (FormatException)
+                {
+                    label3.Text = "You must enter an integer";//if text is not a number
+                }
+
+                for (int i = 0; i < grades.Count(); i++)
+                {
+                    grades.Sort();//sorts list numbers in order
+                    label1.Text += "\n" + grades[i] + "%";//organizes the marks and adds percent
+                    if (i == 20)//can not put more than 21 grades in the system at once
+                    {
+                        limit = true;//add button can no longer be clicked
+                        label3.Text = "   List is Full";
+                    }
+                }
+                marksBox.Clear();
             }
-            catch (FormatException)
-            {
-                label3.Text = "You must enter an integer";//if text is not a number
-            }
-            catch (IndexOutOfRangeException)
-            {
-                label3.Text = "Array is full";
-            }
-            for (int i = 0; i < grades.Count(); i++)
-            {
-                grades.Sort();//sorts list numbers in order
-                label1.Text += "\n" + grades[i] + "%";//organizes the marks and adds percent
-            }
-            marksBox.Clear();
         }
 
         private void analyzeButton_Click(object sender, EventArgs e)
@@ -56,6 +66,10 @@ namespace Marks_Analysis
             if (canClick == true)
             {
                 label3.Text = "";
+                if (limit == true)
+                {
+                    label3.Text = "List is Full";
+                }
                 int avg = 0;
                 int avg1 = 0;
                 int levelR = 0;
@@ -124,9 +138,11 @@ namespace Marks_Analysis
 
         private void clearButton_Click(object sender, EventArgs e)
         {
+            limit = false; //add button can be clicked 
             canClick = false;//analyze button can no longer be clicked
             label1.Text = "";
             label2.Text = "";
+            label3.Text = "";
             grades.Clear();//clears all numbers in list
         }
     }
